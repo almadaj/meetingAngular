@@ -13,6 +13,7 @@ import { Newsletter } from '../../services/newsletter';
 export class NewsletterForm {
   newsletterForm: FormGroup;
   loading = signal(false)
+  statusCode = signal<string | null>(null)
 
   constructor(private service: Newsletter) {
     this.newsletterForm = new FormGroup({
@@ -23,15 +24,19 @@ export class NewsletterForm {
 
   onSubmit() {
     this.loading.set(true)
+    this.statusCode.set(null)
+
     if (this.newsletterForm.valid)
       this.service.sendData(this.newsletterForm.value.name, this.newsletterForm.value.email).subscribe({
-        next: () => {
+        next: (response) => {
           this.newsletterForm.reset()
           this.loading.set(false)
+          this.statusCode.set(response.message);
         },
         error: (err) => {
           console.error(err)
           this.loading.set(false)
+          this.statusCode.set(err.status);
           alert('Erro ao enviar dados. Tente novamente.')
         },
         complete: () => {

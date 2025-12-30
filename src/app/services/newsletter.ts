@@ -10,7 +10,7 @@ export class Newsletter {
   constructor(private http: HttpClient) { }
 
   sendData(name: string, email: string): Observable<NewsletterResponse> {
-    const data = { name, email };
+    const data = { name, email }
 
     return this.http.post<NewsletterResponse>(this.endpointUrl, data);
   }
